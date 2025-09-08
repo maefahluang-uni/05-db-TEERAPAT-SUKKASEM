@@ -19,38 +19,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    //TODO: add userrepository as `public` with @Autowired
     @Autowired
     public UserRepository repo;
    
     @PostMapping("/users")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
-
-        //TODO: check if user with the username exists
-       
-        //TODO: save the user
-
-        //TODO: remove below and return proper status
-        return new ResponseEntity<>( HttpStatus.NOT_IMPLEMENTED);
+        if (repo.findByUsername(user.getUsername()) != null) {
+            return new ResponseEntity<>("Username already exists", HttpStatus.CONFLICT);
+        }
+        repo.save(user);
+        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> list() {
-        
-        //TODO: remove below and return proper result
-        return new ResponseEntity<>( HttpStatus.NOT_IMPLEMENTED);
+        List<User> users = repo.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        User user = repo.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        
-        //TODO: check if user with the id exists
-       
-        //TODO: delete the user
-    
-        //TODO: remove below and return proper status
-        return new ResponseEntity<>( HttpStatus.NOT_IMPLEMENTED);
+        if (!repo.existsById(id)) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+        repo.deleteById(id);
+        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
-
-
 }

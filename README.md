@@ -16,6 +16,8 @@ In UserRepository, declare the following methods that help to find all user and 
 
 ```
 Your answer
+
+On startup, data.sql is executed to seed the database with 10 initial user records for testing purposes.
 ```
 
 ## User Reservice - Complete the code
